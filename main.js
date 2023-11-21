@@ -156,13 +156,20 @@ app.stage.addChild(crate3);
 
 
 
+score = 0;
+const shadow = new PIXI.Text("Score: " + score, { fill: 0x000000, fontSize:20 });
+  shadow.anchor.set(0.5);
+  shadow.position.set(50, 20);
+  shadow.style.stroke = '#000000';
+  shadow.style.strokeThickness = 4; // Adjust the thickness of the outline
+  app.stage.addChild(shadow);
+
+  const mainText = new PIXI.Text(shadow.text, { fill: 0xffffff, fontSize:20 });
+  mainText.anchor.set(0.5);
+  mainText.position.set(shadow.x, shadow.y);
+  app.stage.addChild(mainText);
 
 
-const dynamicText = new PIXI.Text('Score: 0', { fill: 0x2D4ECD, fontSize: 20 });
-dynamicText.x = app.screen.width / 12;
-dynamicText.y = 20;
-dynamicText.anchor.set(0.5); // Center anchor
-app.stage.addChild(dynamicText);
 
 // Listen for keyboard events
 const left = keyboard("KeyA");
@@ -305,6 +312,8 @@ space.x = player.x
 
 const kKey = keyboard("KeyK");
 kKey.press = () => {
+  score++;
+  updateScore();
   console.log(`Player coordinates: x = ${player.x}, y = ${player.y}`);
 };
 
@@ -374,4 +383,8 @@ function RevealC3(){
 
 async function loadAnim(){
   await shopSpritesheet.parse();
+}
+function updateScore(){
+  mainText.text = "Score: "+score
+  shadow.text = mainText.text
 }
