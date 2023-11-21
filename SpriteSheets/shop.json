@@ -1,0 +1,28 @@
+{"frames": {
+
+"shop.png":
+{
+	"frame": {"x":0,"y":0,"w":216,"h":180},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":216,"h":180},
+	"sourceSize": {"w":216,"h":180}
+},
+"shop2.png":
+{
+	"frame": {"x":216,"y":0,"w":216,"h":180},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":216,"h":180},
+	"sourceSize": {"w":216,"h":180}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "shop.png",
+	"format": "RGBA8888",
+	"size": {"w":432,"h":180},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:8cb6324d7bfecae8abf916239f0520a4:ad732ebe5993abcc36065d6b49fc4111:9b474ecad0a68c8690698c029d1f12b5$"
+}
+}
