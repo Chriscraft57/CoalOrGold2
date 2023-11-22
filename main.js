@@ -192,7 +192,7 @@ app.stage.addChild(shopSpritesheet);
 const playerSprite = PIXI.Texture.from('Assets/player.png')
 const player = new PIXI.Sprite(playerSprite);
 player.x = app.screen.width / 2 - player.width / 2;
-player.y = app.screen.height / 1.5 - player.height / 1.5;
+player.y = 479;
 
 const minetexture = PIXI.Texture.from('Assets/mines.png')
 const mines = new PIXI.Sprite(minetexture)
