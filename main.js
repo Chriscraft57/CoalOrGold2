@@ -177,50 +177,32 @@ const right = keyboard("KeyD");
 const leftARROW = keyboard("ArrowLeft");
 const rightARROW = keyboard("ArrowRight");
 
+function leftPress()
+{
+  if (left.isDown || leftARROW.isDown)
+    return true;
+}
 
-// Handle key press and release events
-left.press = () => {
-  playerVx = -playerSpeed;
-};
-
-left.release = () => {
-  if (!right.isDown) {
-    playerVx = 0;
-  }
-};
-
-right.press = () => {
-  playerVx = playerSpeed;
-};
-
-right.release = () => {
-  if (!left.isDown) {
-    playerVx = 0;
-  }
-};
-
-leftARROW.press = () => {
-  playerVx = -playerSpeed;
-};
-
-leftARROW.release = () => {
-  if (!right.isDown) {
-    playerVx = 0;
-  }
-};
-
-rightARROW.press = () => {
-  playerVx = playerSpeed;
-};
-
-rightARROW.release = () => {
-  if (!left.isDown) {
-    playerVx = 0;
-  }
-};
-
+function rightPress()
+{
+  if (right.isDown || rightARROW.isDown)
+    return true;
+}
 // Game loop
 app.ticker.add(() => {
+
+  // Controls
+  if (leftPress()) {
+    playerVx = -playerSpeed;
+  }
+  if (rightPress()) {
+    playerVx = playerSpeed;
+  }
+  if (!leftPress() && !rightPress() || leftPress() && rightPress()) {
+    playerVx = 0;
+  }
+  
+
   // Update player position based on velocity
   player.x += playerVx;
 
