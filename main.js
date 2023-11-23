@@ -205,7 +205,9 @@ app.stage.addChild(mines)
 
 app.stage.addChild(player);
 
-
+const goldTexture = PIXI.Texture.from('Assets/gold.png')
+const coalTexture = PIXI.Texture.from('Assets/coal.png')
+const diamTexture = PIXI.Texture.from('Assets/diamond.png')
 
 // Load the spritesheet image and create a PIXI.BaseTexture
 const baseTexturePlayerRight = PIXI.BaseTexture.from(playerRight.meta.image);
@@ -291,7 +293,7 @@ crate1.x = 1280 / 2 - crate1.width / 2 - 200;
 crate1.y = 250;
 crate1.visible = false
 crate1.scale.set(0.2)
-app.stage.addChild(crate1);
+
 
 const crate2 = new PIXI.Sprite(CrateTex);
 crate2.anchor.set(0.5); // Adjust anchor point as needed
@@ -299,7 +301,7 @@ crate2.x = 1280 / 2 - crate2.width / 2;
 crate2.y = 250;
 crate2.visible = false
 crate2.scale.set(0.2)
-app.stage.addChild(crate2);
+
 
 const crate3 = new PIXI.Sprite(CrateTex);
 crate3.anchor.set(0.5); // Adjust anchor point as needed
@@ -307,24 +309,59 @@ crate3.x = crate2.x + 200;
 crate3.y = 250;
 crate3.visible = false
 crate3.scale.set(0.2)
+
+
+
+crate1.interactive = true;
+crate1.buttonMode = true;
+crate1.on('pointerdown', RevealC1);
+
+crate2.interactive = true;
+crate2.buttonMode = true;
+crate2.on('pointerdown', RevealC2);
+
+crate3.interactive = true;
+crate3.buttonMode = true;
+crate3.on('pointerdown', RevealC3);
+
+app.stage.addChild(crate1);
+app.stage.addChild(crate2);
 app.stage.addChild(crate3);
 
-
-
-
-
 score = 0;
+backpackInv = 0;
+backpackworth = 0;
+backpackmax = 5;
+ShowCoinText = true
 const shadow = new PIXI.Text("Score: " + score, { fill: 0x000000, fontSize:20 });
   shadow.anchor.set(0.5);
   shadow.position.set(50, 20);
   shadow.style.stroke = '#000000';
   shadow.style.strokeThickness = 4; // Adjust the thickness of the outline
+  shadow.experimentalLetterSpacing = false;
   app.stage.addChild(shadow);
 
   const mainText = new PIXI.Text(shadow.text, { fill: 0xffffff, fontSize:20 });
   mainText.anchor.set(0.5);
   mainText.position.set(shadow.x, shadow.y);
+  mainText.experimentalLetterSpacing = false;
   app.stage.addChild(mainText);
+
+  const shadowBp = new PIXI.Text("Inventar: " + backpackInv + "/" + backpackmax, { fill: 0x000000, fontSize:20 });
+  shadowBp.anchor.set(0.5);
+  shadowBp.x = shadow.x + 19
+  shadowBp.y = shadow.y + 20
+  shadowBp.style.stroke = '#000000';
+  shadowBp.style.strokeThickness = 4; // Adjust the thickness of the outline
+  app.stage.addChild(shadowBp);
+
+  const Backpack = new PIXI.Text(shadowBp.text, { fill: 0xffffff, fontSize:20 });
+  Backpack.anchor.set(0.5);
+  Backpack.position.set(shadowBp.x, shadowBp.y);
+  app.stage.addChild(Backpack);
+
+
+
 
 
 
@@ -417,9 +454,30 @@ if (playerVx > 0) {
     space.visible = true
     const SpaceKey = keyboard("Space");
     SpaceKey.press = () => {
-      if (285 <= player.x && player.x <= 360)
+      if (285 <= player.x && player.x <= 360 && backpackworth == 0 && ShowCoinText){  
       CoinText.visible = true
+      ShowCoinText = false;
     }
+    if (285 <= player.x && player.x <= 360 && !backpackworth == 0){
+
+  
+      changeTexture(crate1, CrateTex)
+      changeTexture(crate2, CrateTex)
+      changeTexture(crate3, CrateTex)
+  
+      crate1.interactive = true
+      crate2.interactive = true
+      crate3.interactive = true
+
+      score = score + backpackworth
+      backpackworth = 0;
+      backpackInv = 0;
+      updateScore()
+
+      backpackworth = 0;
+    }
+  }
+    
   }
   else 
   if(!1060 <= player.x && !player.x <= 1140)
@@ -474,7 +532,6 @@ if (c1content == null){
     }
 
   }
-
   else{
     space.visible = false
     CoinText.visible = false
@@ -482,9 +539,19 @@ if (c1content == null){
     crate2.visible = false
     crate3.visible = false
 
+    changeTexture(crate1, CrateTex)
+    changeTexture(crate2, CrateTex)
+    changeTexture(crate3, CrateTex)
+
+    crate1.interactive = true
+    crate2.interactive = true
+    crate3.interactive = true
+
     c1content = null
     c2content = null
     c3content = null
+
+ 
   }
 
 });
@@ -553,20 +620,96 @@ function randomIntFromInterval(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function RevealC1(){
-
+function changeTexture(sprite, newTexture) {
+  sprite.texture = newTexture;
 }
-function RevealC2(){
 
+
+function RevealC1(){
+if(backpackInv != backpackmax){
+  
+    console.log("Revealed 1")
+   
+    if (c1content == 1){
+       changeTexture(crate1, goldTexture)
+       backpackworth = backpackworth + 5
+    }
+    if (c1content == 2 || c1content == 3){
+       changeTexture(crate1, coalTexture)
+       backpackworth = backpackworth + 1
+   }
+   if (c1content == 4){
+       changeTexture(crate1, diamTexture)
+       backpackworth = backpackworth + 25
+   }
+   backpackInv = backpackInv + 1
+   updateScore()
+   crate1.interactive = false
+}
+else{
+  HasChoosenCrate()
+}
+}
+
+function RevealC2(){
+  if(backpackInv != backpackmax){
+  if (c2content == 1){
+    changeTexture(crate2, goldTexture)
+    backpackworth = backpackworth + 5
+ }
+ if (c2content == 2 || c2content == 3){
+    changeTexture(crate2, coalTexture)
+    backpackworth = backpackworth + 1
+}
+if (c2content == 4){
+  changeTexture(crate2, diamTexture)
+  backpackworth = backpackworth + 5
+}
+  backpackInv = backpackInv + 1
+  updateScore()
+  crate2.interactive = false
+}
+else{
+  HasChoosenCrate()
+}
 }
 function RevealC3(){
+  if(backpackInv != backpackmax){
 
+  if (c3content == 1){
+    changeTexture(crate3, goldTexture)
+    backpackworth = backpackworth + 5
+ }
+ if (c3content == 2 || c3content == 3){
+    changeTexture(crate3, coalTexture)
+    backpackworth = backpackworth + 1
+}
+if (c3content == 4){
+  changeTexture(crate3, diamTexture)
+  backpackworth = backpackworth + 25
+}
+backpackInv = backpackInv + 1
+  updateScore()
+  crate3.interactive = false
+  
+}
+else{
+  HasChoosenCrate()
+}
 }
 
 async function loadAnim(){
   await shopSpritesheet.parse();
 }
 function updateScore(){
+  shadowBp.text = "Inventar: " + backpackInv + "/" + backpackmax
+  Backpack.text = "Inventar: " + backpackInv + "/" + backpackmax
   mainText.text = "Score: "+score
   shadow.text = mainText.text
+  console.log(backpackInv)
+}
+function HasChoosenCrate(){
+  crate1.interactive = false
+  crate2.interactive = false
+  crate3.interactive = false
 }
