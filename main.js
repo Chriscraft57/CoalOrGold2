@@ -299,7 +299,7 @@ app.stage.addChild(playerLeftSpritesheet);
 
 
 // Define movement speed
-const playerSpeed = 1
+const playerSpeed = 5
 
 // Define player velocity
 let playerVx = 0;
