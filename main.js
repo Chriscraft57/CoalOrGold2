@@ -161,6 +161,40 @@ const playerRight = {"frames": {
     }
     ;
 
+    const arrowanim = {"frames": {
+
+      "arrow0.png":
+      {
+        "frame": {"x":0,"y":0,"w":490,"h":510},
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": {"x":0,"y":0,"w":490,"h":510},
+        "sourceSize": {"w":490,"h":510}
+      },
+      "arrow1.png":
+      {
+        "frame": {"x":490,"y":0,"w":490,"h":510},
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": {"x":0,"y":0,"w":490,"h":510},
+        "sourceSize": {"w":490,"h":510}
+      }},
+      "animations": {
+        "arrow": ["arrow0.png","arrow1.png"]
+      },
+      "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.1",
+        "image": "arrow.png",
+        "format": "RGBA8888",
+        "size": {"w":980,"h":510},
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:0238b29231ec84093495dab815cd84be:9dbbd0fa5950ac26db9e48e8c4613751:da7b7f302b584bc2843bb50b1ff3bd62$"
+      }
+      }
+      
+    
+
 
 
 // Load the spritesheet image and create a PIXI.BaseTexture
@@ -260,7 +294,7 @@ app.stage.addChild(playerLeftSpritesheet);
 
 
 // Define movement speed
-const playerSpeed = 3
+const playerSpeed = 1
 
 // Define player velocity
 let playerVx = 0;
@@ -328,6 +362,38 @@ app.stage.addChild(crate1);
 app.stage.addChild(crate2);
 app.stage.addChild(crate3);
 
+const baseTextureArrow = PIXI.BaseTexture.from(arrowanim.meta.image);
+
+// Create an array to hold the textures from the frames
+const texturesArrow = [];
+for (const frameName in arrowanim.frames) {
+  if (Object.hasOwnProperty.call(arrowanim.frames, frameName)) {
+    const frameArrow = arrowanim.frames[frameName];
+    const textureArrow = new PIXI.Texture(baseTextureArrow, new PIXI.Rectangle(frameArrow.frame.x, frameArrow.frame.y, frameArrow.frame.w, frameArrow.frame.h));
+    texturesArrow.push(textureArrow);
+  }
+}
+
+// Create an AnimatedSprite using the generated textures
+const ArrowSpritesheet = new PIXI.AnimatedSprite(texturesArrow);
+ArrowSpritesheet.anchor.set(0.5); // Adjust anchor point as needed
+ArrowSpritesheet.x = shopSpritesheet.x;
+ArrowSpritesheet.y = shopSpritesheet.y - 140;
+ArrowSpritesheet.animationSpeed = 0.01666;
+ArrowSpritesheet.scale.set(0.15)
+ArrowSpritesheet.play();
+
+app.stage.addChild(ArrowSpritesheet);
+
+
+
+
+
+
+
+
+
+
 score = 0;
 backpackInv = 0;
 backpackworth = 0;
@@ -384,6 +450,11 @@ function rightPress()
 }
 // Game loop
 app.ticker.add(() => {
+
+if (backpackInv == backpackmax)
+{
+  ArrowSpritesheet.visible = true
+}
 
   // Controls
   if (leftPress()) {
@@ -457,6 +528,7 @@ if (playerVx > 0) {
       if (285 <= player.x && player.x <= 360 && backpackworth == 0 && ShowCoinText){  
       CoinText.visible = true
       ShowCoinText = false;
+      ArrowSpritesheet.visible = false
     }
     if (285 <= player.x && player.x <= 360 && !backpackworth == 0){
 
@@ -475,6 +547,7 @@ if (playerVx > 0) {
       updateScore()
 
       backpackworth = 0;
+      ArrowSpritesheet.visible = false
     }
   }
     
@@ -663,7 +736,7 @@ function RevealC2(){
 }
 if (c2content == 4){
   changeTexture(crate2, diamTexture)
-  backpackworth = backpackworth + 5
+  backpackworth = backpackworth + 25
 }
   backpackInv = backpackInv + 1
   updateScore()
