@@ -13,6 +13,11 @@ c1content = null
 c2content = null
 c3content = null
 
+// Listen for keyboard events
+const left = keyboard("KeyA");
+const right = keyboard("KeyD");
+const leftARROW = keyboard("ArrowLeft");
+const rightARROW = keyboard("ArrowRight");
 
 
 PIXI.Loader.shared.add('background', 'Assets/background.png').load((loader, resources) => {
@@ -426,16 +431,32 @@ const shadow = new PIXI.Text("Score: " + score, { fill: 0x000000, fontSize:20 })
   Backpack.position.set(shadowBp.x, shadowBp.y);
   app.stage.addChild(Backpack);
 
+  let movementDirection = 0; // 0: no movement, -1: left, 1: right
+
+  // Listen for keydown and keyup events to update the movement direction
+  left.press = () => {
+    movementDirection = -1;
+  };
+  
+  right.press = () => {
+    movementDirection = 1;
+  };
+  
+  left.release = () => {
+    if (movementDirection === -1) {
+      movementDirection = 0;
+    }
+  };
+  
+  right.release = () => {
+    if (movementDirection === 1) {
+      movementDirection = 0;
+    }
+  };
 
 
 
 
-
-// Listen for keyboard events
-const left = keyboard("KeyA");
-const right = keyboard("KeyD");
-const leftARROW = keyboard("ArrowLeft");
-const rightARROW = keyboard("ArrowRight");
 
 function leftPress()
 {
@@ -456,17 +477,18 @@ if (backpackInv == backpackmax)
   ArrowSpritesheet.visible = true
 }
 
-  // Controls
-  if (leftPress()) {
-    playerVx = -playerSpeed;
-  }
-  if (rightPress()) {
-    playerVx = playerSpeed;
-  }
-  if (!leftPress() && !rightPress() || leftPress() && rightPress()) {
-    playerVx = 0;
-  }
-  
+if (movementDirection === -1) {
+  playerVx = -playerSpeed;
+} else if (movementDirection === 1) {
+  playerVx = playerSpeed;
+} else {
+  playerVx = 0;
+}
+
+
+
+// Keep player within bounds (your existing bounds checking logic)
+
 
   // Update player position based on velocity
   player.x += playerVx;
@@ -541,6 +563,9 @@ if (playerVx > 0) {
       crate2.interactive = true
       crate3.interactive = true
 
+      if (backpackworth > 0){
+        new Audio('sell.mp3').play()
+      }
       score = score + backpackworth
       backpackworth = 0;
       backpackInv = 0;
@@ -637,6 +662,7 @@ kKey.press = () => {
   score++;
   updateScore();
   console.log(`Player coordinates: x = ${player.x}, y = ${player.y}`);
+  console.log(`Vel: ${playerVx}`);
 };
 
 function keyboard(keyCode) {
