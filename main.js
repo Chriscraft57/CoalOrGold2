@@ -379,7 +379,7 @@ const ArrowSpritesheet = new PIXI.AnimatedSprite(texturesArrow);
 ArrowSpritesheet.anchor.set(0.5); // Adjust anchor point as needed
 ArrowSpritesheet.x = shopSpritesheet.x;
 ArrowSpritesheet.y = shopSpritesheet.y - 140;
-ArrowSpritesheet.animationSpeed = 0.01666;
+ArrowSpritesheet.animationSpeed = 0.03666;
 ArrowSpritesheet.scale.set(0.15)
 ArrowSpritesheet.play();
 
