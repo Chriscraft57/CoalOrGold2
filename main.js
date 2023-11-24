@@ -763,6 +763,7 @@ const kKey = keyboard("KeyK");
 kKey.press = () => {
   backpackworth = backpackworth + 20;
   updateScore();
+  console.log(crate2.y)
   space.visible = false
   console.log(`Player coordinates: x = ${player.x}, y = ${player.y}`);
   console.log(`Vel: ${playerVx}`);
