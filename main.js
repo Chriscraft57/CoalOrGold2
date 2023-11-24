@@ -13,6 +13,9 @@ c1content = null
 c2content = null
 c3content = null
 
+crateTutorial = true
+InvTutorial = true
+
 // Listen for keyboard events
 const left = keyboard("KeyA");
 const right = keyboard("KeyD");
@@ -299,7 +302,7 @@ app.stage.addChild(playerLeftSpritesheet);
 
 
 // Define movement speed
-const playerSpeed = 5
+const playerSpeed = 3
 
 // Define player velocity
 let playerVx = 0;
@@ -431,6 +434,56 @@ const shadow = new PIXI.Text("Score: " + score, { fill: 0x000000, fontSize:20 })
   Backpack.position.set(shadowBp.x, shadowBp.y);
   app.stage.addChild(Backpack);
 
+  const ShadowInfo1 = new PIXI.Text("Benutze A & D um dich zu bewegen!", { fill: 0x000000, fontSize:30 });
+  ShadowInfo1.anchor.set(0.5);
+  ShadowInfo1.x = 1280 / 2
+  ShadowInfo1.y = crate2.y - 20
+  ShadowInfo1.style.stroke = '#000000';
+  ShadowInfo1.style.strokeThickness = 4; // Adjust the thickness of the outline
+  app.stage.addChild(ShadowInfo1);
+
+  const Info1 = new PIXI.Text(ShadowInfo1.text, { fill: 0xffffff, fontSize:30 });
+  Info1.anchor.set(0.5);
+  Info1.position.set(ShadowInfo1.x, ShadowInfo1.y);
+  app.stage.addChild(Info1);
+
+  const ShadowInfo2 = new PIXI.Text("Klicke mit der Maus auf Kisten bis dein Inventar voll ist!", { fill: 0x000000, fontSize:30 });
+  ShadowInfo2.anchor.set(0.5);
+  ShadowInfo2.x = 1280 / 2
+  ShadowInfo2.y = crate2.y - 100
+  ShadowInfo2.style.stroke = '#000000';
+  ShadowInfo2.style.strokeThickness = 4; // Adjust the thickness of the outline
+  ShadowInfo2.visible = false
+  app.stage.addChild(ShadowInfo2);
+
+  const Info2 = new PIXI.Text(ShadowInfo2.text, { fill: 0xffffff, fontSize:30 });
+  Info2.anchor.set(0.5);
+  Info2.position.set(ShadowInfo2.x, ShadowInfo2.y);
+  Info2.visible = false
+  app.stage.addChild(Info2);
+
+  const ShadowInfo3 = new PIXI.Text("Dein Inventar ist voll! Geh zum Shop und verkauf das Erz!", { fill: 0x000000, fontSize:30 });
+  ShadowInfo3.anchor.set(0.5,0.5);
+  ShadowInfo3.x = 1280 / 2
+  ShadowInfo3.y = crate2.y - 100
+  ShadowInfo3.style.stroke = '#000000';
+  ShadowInfo3.style.strokeThickness = 4; // Adjust the thickness of the outline
+  ShadowInfo3.visible = false
+  app.stage.addChild(ShadowInfo3);
+
+  const Info3 = new PIXI.Text(ShadowInfo3.text, { fill: 0xffffff, fontSize:30 });
+  Info3.anchor.set(0.5,0.5);
+  Info3.position.set(ShadowInfo3.x, ShadowInfo3.y);
+  Info3.visible = false
+  app.stage.addChild(Info3);
+
+
+
+
+
+
+
+  
   let movementDirection = 0; // 0: no movement, -1: left, 1: right
 
   // Listen for keydown and keyup events to update the movement direction
@@ -474,13 +527,31 @@ app.ticker.add(() => {
 
 if (backpackInv == backpackmax)
 {
+  crateTutorial = false
   ArrowSpritesheet.visible = true
+  ShadowInfo2.visible = false
+  Info2.visible = false
+
+
+  if(!Info2.visible && InvTutorial) {
+    Info3.visible = true
+    ShadowInfo3.visible = true
+  }
 }
+else {
+  Info3.visible = false
+  ShadowInfo3.visible = false
+}
+
 
 if (movementDirection === -1) {
   playerVx = -playerSpeed;
+  Info1.visible = false
+  ShadowInfo1.visible = false
 } else if (movementDirection === 1) {
   playerVx = playerSpeed;
+  Info1.visible = false
+  ShadowInfo1.visible = false
 } else {
   playerVx = 0;
 }
@@ -550,7 +621,8 @@ if (playerVx > 0) {
       if (285 <= player.x && player.x <= 360 && backpackworth == 0 && ShowCoinText){  
       CoinText.visible = true
       ShowCoinText = false;
-      ArrowSpritesheet.visible = false
+      ArrowSpritesheet.x = 1123;
+        ArrowSpritesheet.y = mines.y - 100;
     }
     if (285 <= player.x && player.x <= 360 && !backpackworth == 0){
 
@@ -565,6 +637,9 @@ if (playerVx > 0) {
 
       if (backpackworth > 0){
         new Audio('sell.mp3').play()
+      }
+      if (backpackInv == backpackmax){
+        InvTutorial = false
       }
       score = score + backpackworth
       backpackworth = 0;
@@ -587,6 +662,16 @@ if (playerVx > 0) {
     const SpaceKey = keyboard("Space");
     SpaceKey.press = () => {
       if (1060 <= player.x && player.x <= 1140){
+        if (crateTutorial){
+          Info2.visible = true
+          ShadowInfo2.visible = true
+        }
+
+        MineReset()
+
+        ArrowSpritesheet.x = shopSpritesheet.x;
+        ArrowSpritesheet.y = shopSpritesheet.y - 140;
+        ArrowSpritesheet.visible = false
         crate1.visible = true
         crate2.visible = true
         crate3.visible = true
@@ -631,24 +716,9 @@ if (c1content == null){
 
   }
   else{
-    space.visible = false
-    CoinText.visible = false
-    crate1.visible = false
-    crate2.visible = false
-    crate3.visible = false
-
-    changeTexture(crate1, CrateTex)
-    changeTexture(crate2, CrateTex)
-    changeTexture(crate3, CrateTex)
-
-    crate1.interactive = true
-    crate2.interactive = true
-    crate3.interactive = true
-
-    c1content = null
-    c2content = null
-    c3content = null
-
+    MineReset()
+    ShadowInfo2.visible = false
+    Info2.visible = false
  
   }
 
@@ -659,7 +729,7 @@ if (c1content == null){
 
 const kKey = keyboard("KeyK");
 kKey.press = () => {
-  score++;
+  backpackworth = backpackworth + 20;
   updateScore();
   console.log(`Player coordinates: x = ${player.x}, y = ${player.y}`);
   console.log(`Vel: ${playerVx}`);
@@ -727,7 +797,8 @@ function changeTexture(sprite, newTexture) {
 function RevealC1(){
 if(backpackInv != backpackmax){
   
-    console.log("Revealed 1")
+  ShadowInfo2.text = "Drücke die Leertaste um nach mehr Erz zu suchen!"
+  Info2.text = ShadowInfo2.text
    
     if (c1content == 1){
        changeTexture(crate1, goldTexture)
@@ -751,6 +822,10 @@ else{
 }
 
 function RevealC2(){
+
+  ShadowInfo2.text = "Drücke die Leertaste um nach mehr Erz zu suchen!"
+  Info2.text = ShadowInfo2.text
+
   if(backpackInv != backpackmax){
   if (c2content == 1){
     changeTexture(crate2, goldTexture)
@@ -773,6 +848,10 @@ else{
 }
 }
 function RevealC3(){
+
+  ShadowInfo2.text = "Drücke die Leertaste um nach mehr Erz zu suchen!"
+  Info2.text = ShadowInfo2.text
+
   if(backpackInv != backpackmax){
 
   if (c3content == 1){
@@ -811,4 +890,25 @@ function HasChoosenCrate(){
   crate1.interactive = false
   crate2.interactive = false
   crate3.interactive = false
+}
+function MineReset(){
+  space.visible = false
+    CoinText.visible = false
+    crate1.visible = false
+    crate2.visible = false
+    crate3.visible = false
+
+    changeTexture(crate1, CrateTex)
+    changeTexture(crate2, CrateTex)
+    changeTexture(crate3, CrateTex)
+
+    crate1.interactive = true
+    crate2.interactive = true
+    crate3.interactive = true
+
+    c1content = null
+    c2content = null
+    c3content = null
+
+    
 }
