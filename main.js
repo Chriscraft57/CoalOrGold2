@@ -761,10 +761,10 @@ if (c1content == null){
 
 const kKey = keyboard("KeyK");
 kKey.press = () => {
-  backpackworth = backpackworth + 20;
+  // backpackworth = backpackworth + 20;
   updateScore();
   console.log(crate2.y)
-  space.visible = false
+  // space.visible = false
   console.log(`Player coordinates: x = ${player.x}, y = ${player.y}`);
   console.log(`Vel: ${playerVx}`);
 };
