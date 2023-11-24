@@ -13,8 +13,11 @@ c1content = null
 c2content = null
 c3content = null
 
+movementTutorial = true
 crateTutorial = true
 InvTutorial = true
+
+backpackUpgradeSize = 10
 
 // Listen for keyboard events
 const left = keyboard("KeyA");
@@ -242,7 +245,14 @@ mines.x = 1070;
 mines.y = 420;
 app.stage.addChild(mines)
 
+const pillar0texture = PIXI.Texture.from('Assets/pillar0.png')
+const pillar1texture = PIXI.Texture.from('Assets/pillar1.png')
 
+const pillar = new PIXI.Sprite(pillar0texture)
+pillar.y = shopSpritesheet.y - 50
+pillar.x = 145
+pillar.scale.set(0.07)
+app.stage.addChild(pillar)
 
 
 app.stage.addChild(player);
@@ -546,8 +556,11 @@ else {
 
 if (movementDirection === -1) {
   playerVx = -playerSpeed;
+  
+  if (movementTutorial == true){
   Info1.visible = false
   ShadowInfo1.visible = false
+}
 } else if (movementDirection === 1) {
   playerVx = playerSpeed;
   Info1.visible = false
@@ -612,7 +625,20 @@ if (playerVx > 0) {
   playerLeftSpritesheet.stop();
 }
 
-
+if (123 <= player.x && player.x <= 160 && backpackmax != backpackUpgradeSize) {
+  space.visible = true
+  const SpaceKey = keyboard("Space");
+  SpaceKey.press = () => {
+    if (123 <= player.x && player.x <= 160 && score >= 100){
+      
+        score = score - 100
+        backpackmax = backpackUpgradeSize
+        changeTexture(pillar,pillar1texture)
+        updateScore()
+      
+  }
+}
+}
 
   if (285 <= player.x && player.x <= 360) {
     space.visible = true
@@ -655,8 +681,7 @@ if (playerVx > 0) {
   else 
   if(!1060 <= player.x && !player.x <= 1140)
 
-
-
+  
   if (1060 <= player.x && player.x <= 1140) {
     space.visible = true
     const SpaceKey = keyboard("Space");
@@ -716,7 +741,14 @@ if (c1content == null){
 
   }
   else{
+
+    if ((123 <= player.x&& player.x <= 160)== false){
     MineReset()
+
+    
+  }
+
+
     ShadowInfo2.visible = false
     Info2.visible = false
  
@@ -731,6 +763,7 @@ const kKey = keyboard("KeyK");
 kKey.press = () => {
   backpackworth = backpackworth + 20;
   updateScore();
+  space.visible = false
   console.log(`Player coordinates: x = ${player.x}, y = ${player.y}`);
   console.log(`Vel: ${playerVx}`);
 };
@@ -892,7 +925,7 @@ function HasChoosenCrate(){
   crate3.interactive = false
 }
 function MineReset(){
-  space.visible = false
+    space.visible = false
     CoinText.visible = false
     crate1.visible = false
     crate2.visible = false
