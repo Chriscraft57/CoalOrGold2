@@ -629,7 +629,7 @@ if (123 <= player.x && player.x <= 160 && backpackmax != backpackUpgradeSize) {
   space.visible = true
   const SpaceKey = keyboard("Space");
   SpaceKey.press = () => {
-    if (123 <= player.x && player.x <= 160 && score >= 100){
+    if (123 <= player.x && player.x <= 160 && score >= 100 && backpackmax != backpackUpgradeSize){
       
         score = score - 100
         backpackmax = backpackUpgradeSize
